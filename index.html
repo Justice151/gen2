@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-image: url('https://images.unsplash.com/photo-1503437313881-503a912264e5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); /* Flower image link */
+            background-size: cover;
+        }
+        #generator, #timer {
+            display: flex; /* Change display to flex */
+            flex-direction: column; /* Add flex-direction */
+            align-items: center; /* Center align elements */
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        #countdown {
+            font-size: 36px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="generator">
+        <h2>Group Generator</h2>
+        <div>
+            <label for="categoryA">Category A:</label>
+            <input type="text" id="categoryA" placeholder="Enter names separated by commas">
+        </div>
+        <div>
+            <label for="categoryB">Category B:</label>
+            <input type="text" id="categoryB" placeholder="Enter names separated by commas">
+        </div>
+        <div>
+            <label for="groupSize">Number of People per Group:</label>
+            <input type="number" id="groupSize" min="1" value="1">
+        </div>
+        <button onclick="generateGroups()">Generate Groups</button>
+    </div>
+
+    <div id="timer" style="display:none;"> <!-- Hide timer initially -->
+        <h2>Timer</h2>
+        <div>
+            <label for="time">Set Time (in seconds):</label>
+            <input type="number" id="time" min="1" value="60">
+        </div>
+        <div id="countdown"></div>
+        <button onclick="startTimer()">Start Timer</button>
+        <button onclick="backToGenerator()">Back to Generator</button>
+    </div>
+
+    <script>
+        function generateGroups() {
+            var categoryA = document.getElementById("categoryA").value.split(",");
+            var categoryB = document.getElementById("categoryB").value.split(",");
+            var groupSize = parseInt(document.getElementById("groupSize").value);
+
+            // Combine both categories into one array
+            var combinedNames = categoryA.concat(categoryB);
+
+            // Shuffle the array
+            combinedNames.sort(() => Math.random() - 0.5);
+
+            // Divide the shuffled array into groups
+            var groups = [];
+
+            // Calculate number of groups
+            var numGroups = Math.ceil(combinedNames.length / groupSize);
+
+            // Divide names equally into groups
+            for (var i = 0; i < numGroups; i++) {
+                var group = [];
+                for (var j = 0; j < groupSize; j++) {
+                    var index = i * groupSize + j;
+                    if (index < combinedNames.length) {
+                        group.push(combinedNames[index]);
+                    }
+                }
+                groups.push(group);
+            }
+
+            // Output the groups
+            alert("Groups: " + JSON.stringify(groups));
+        }
+
+        function startTimer() {
+            var time = parseInt(document.getElementById("time").value);
+            var countdownElement = document.getElementById("countdown");
+
+            var interval = setInterval(function() {
+                if (time <= 0) {
+                    clearInterval(interval);
+                    countdownElement.textContent = "Time's up!";
+                } else {
+                    var minutes = Math.floor(time / 60);
+                    var seconds = time % 60;
+                    countdownElement.textContent = ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+                    time--;
+                }
+            }, 1000);
+        }
+
+        function backToGenerator() {
+            document.getElementById("generator").style.display = "flex";
+            document.getElementById("timer").style.display = "none";
+        }
+    </script>
+</body>
+</html>
